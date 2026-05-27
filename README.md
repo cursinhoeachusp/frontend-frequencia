@@ -19,10 +19,3 @@ Repositório responsável pela interface e painel administrativo do Sistema de C
 - **Roteamento:** React Router Dom  
 
 ---
-
-## Como rodar o projeto localmente
-
-### 1. Clone o repositório
-```bash
-git clone [https://github.com/cursinhoeachusp/frontend-frequencia](https://github.com/cursinhoeachusp/frontend-frequencia)
-cd frontend-frequencia
