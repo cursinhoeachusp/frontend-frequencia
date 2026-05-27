@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoCpe from '../assets/logo_cpe.png';
 
 // tipagem para mockar dados
 type Aluno = {
@@ -28,7 +29,7 @@ export default function Dashboard() {
           <p className="text-sm text-slate-500">Cursinho Popular EACH - USP</p>
         </div>
         <div className="flex items-center gap-4">
-          
+          <img src={logoCpe} className='w-[120px]' alt="" />
           <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <span>Sair</span>
           </button>
