@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logoCpe from '../assets/logo_cpe.png';
 import { 
   UsersIcon, 
@@ -6,7 +6,8 @@ import {
   ExclamationTriangleIcon, 
   ArrowDownCircleIcon, 
   PencilSquareIcon,
-  CalendarIcon
+  CalendarIcon,
+  ArrowLeftCircleIcon,
 } from '@heroicons/react/24/outline';
 
 type Aluno = {
@@ -33,14 +34,56 @@ export default function Dashboard() {
   const [abaAtiva, setAbaAtiva] = useState('Lista geral');
   const [filtroAtivo, setFiltroAtivo] = useState('Todos');
 
+  const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
+
+  // efeito para buscar no backend
+  useEffect(() => {
+    const buscarDadosDoBackend = async () => {
+      try {
+        const resposta = await fetch('http://localhost:3000/api/admin/alunos'); 
+        
+        if (!resposta.ok) {
+          throw new Error('Erro na conexão com a API');
+        }
+
+        const dadosReais = await resposta.json();
+        setAlunos(dadosReais);
+        
+      } catch (error) {
+        console.error("Backend desligado ou erro na rota:", error);
+        setErro(true);
+        setAlunos(mockAlunos); // usa os dados de mentira se o backend falhar
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    buscarDadosDoBackend();
+  }, []);
+
   // só mostra os alunos do status clicado
-  const alunosFiltrados = mockAlunos.filter((aluno) => {
+  const alunosFiltrados = alunos.filter((aluno) => {
     if (filtroAtivo === 'Todos') return true;
     return aluno.status === filtroAtivo;
   });
 
+  if (carregando) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <p className="text-lg font-semibold text-slate-500 animate-pulse">Carregando dados...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      {erro && (
+        <div className="bg-red-500 text-white text-center py-1 text-sm">
+          O backend não respondeu. Exibindo dados de teste.
+        </div>
+      )}
       <header className="flex items-center justify-between bg-white px-8 py-4 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Sistema de coleta de frequência | Painel administrativo</h1>
@@ -49,6 +92,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-4">
           <img src={logoCpe} className='w-[120px]' alt="" />
           <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
+            <ArrowLeftCircleIcon className="w-6 h-6" />
             <span>Sair</span>
           </button>
         </div>
