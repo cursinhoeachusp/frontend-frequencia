@@ -10,6 +10,7 @@ import {
   ArrowLeftCircleIcon,
   DocumentTextIcon,
   XCircleIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 
 type Aluno = {
@@ -54,6 +55,8 @@ export default function Dashboard() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(false);
+  const [justificativas, setJustificativas] = useState<Justificativa[]>(mockJustificativas);
+  const [justificativaSelecionada, setJustificativaSelecionada] = useState<Justificativa | null>(null);
 
   // efeito para buscar no backend
   useEffect(() => {
@@ -88,6 +91,15 @@ export default function Dashboard() {
 
   const alunosEvadidos = mockAlunos.filter(aluno => aluno.status === 'Evadido');
 
+  const analisarJustificativa = (id: string, novoStatus: 'Aprovada' | 'Recusada') => {
+    const novaLista = justificativas.map(just => 
+      just.id === id ? { ...just, statusAnalise: novoStatus } : just
+    );
+    setJustificativas(novaLista);
+    setJustificativaSelecionada(null);
+    
+  };
+
   if (carregando) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -102,6 +114,65 @@ export default function Dashboard() {
       {erro && (
         <div className="bg-red-500 text-white text-center py-1 text-sm">
           O backend não respondeu. Exibindo dados de teste.
+        </div>
+      )}
+
+      {/* modal */}
+      {justificativaSelecionada && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-xl bg-white shadow-2xl">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 p-4">
+              <h2 className="text-lg font-bold text-slate-800">Analisar justificativa</h2>
+              <button 
+                onClick={() => setJustificativaSelecionada(null)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs font-medium uppercase text-slate-500">Nome do estudante</p>
+                  <p className="font-semibold text-slate-900">{justificativaSelecionada.nome}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase text-slate-500">RA</p>
+                  <p className="font-semibold text-slate-900">{justificativaSelecionada.ra}</p>
+                </div>
+              </div>
+              
+              <div>
+                <p className="text-xs font-medium uppercase text-slate-500">Data da falta</p>
+                <p className="font-semibold text-slate-900">{justificativaSelecionada.dataFalta}</p>
+              </div>
+
+              <div className="rounded-md bg-slate-50 p-3 border border-slate-100">
+                <p className="text-xs font-medium uppercase text-slate-500 mb-1">Motivo</p>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  "{justificativaSelecionada.motivo}"
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 border-t border-slate-100 p-4 bg-slate-50 rounded-b-xl">
+              <button 
+                onClick={() => analisarJustificativa(justificativaSelecionada.id, 'Recusada')}
+                className="flex-1 rounded-md border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+              >
+                Recusar
+              </button>
+              <button 
+                onClick={() => analisarJustificativa(justificativaSelecionada.id, 'Aprovada')}
+                className="flex-1 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+              >
+                Aprovar falta
+              </button>
+            </div>
+            
+          </div>
         </div>
       )}
 
@@ -262,7 +333,7 @@ export default function Dashboard() {
                       </span>
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <button className="text-blue-600 font-medium hover:text-blue-800">Analisar</button>
+                      <button onClick={() => setJustificativaSelecionada(justificativa)} className="text-blue-600 font-medium hover:text-blue-800">Analisar</button>
                     </td>
                   </tr>
                 ))}
