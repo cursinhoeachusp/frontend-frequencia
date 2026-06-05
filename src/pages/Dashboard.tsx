@@ -16,8 +16,18 @@ type Aluno = {
   frequencia: number;
   faltasConsecutivas: number;
   faltasNaSemana: number;
-  status: 'Regular' | 'Atenção' | 'Risco de evasão';
+  status: 'Regular' | 'Atenção' | 'Risco de evasão' | 'Evadido';
+  dataEvasao?: string;
 };
+
+type Justificativa = {
+  id: string;
+  ra: string;
+  nome: string;
+  dataFalta: string;
+  motivo: string;
+  statusAnalise: 'Pendente' | 'Aprovada' | 'Recusada';
+}
 
 // dados mockados
 const mockAlunos: Aluno[] = [
@@ -27,7 +37,10 @@ const mockAlunos: Aluno[] = [
   { ra: '202401044', nome: 'Carolina Reis', frequencia: 75, faltasConsecutivas: 0, faltasNaSemana: 0, status: 'Regular' },
   { ra: '202401055', nome: 'Isabella Dias', frequencia: 45, faltasConsecutivas: 5, faltasNaSemana: 5, status: 'Risco de evasão' },
   { ra: '202401026', nome: 'Maria Silva', frequencia: 78, faltasConsecutivas: 3, faltasNaSemana: 3, status: 'Atenção' },
+  { ra: '202401088', nome: 'Lucas Almeida', frequencia: 10, faltasConsecutivas: 15, faltasNaSemana: 0, status: 'Evadido', dataEvasao: '10/05/2024' },
 ];
+
+
 
 export default function Dashboard() {
   // estados para controlar o que está ativo na tela
@@ -165,25 +178,25 @@ export default function Dashboard() {
                 onClick={() => setFiltroAtivo('Todos')}
                 className={`rounded-md px-4 py-1.5 text-sm font-medium ${filtroAtivo === 'Todos' ? 'bg-blue-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
-                Todos (130)
+                Todos
               </button>
               <button 
                 onClick={() => setFiltroAtivo('Regular')}
                 className={`rounded-md px-4 py-1.5 text-sm font-medium ${filtroAtivo === 'Regular' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
-                Regulares (114)
+                Regulares
               </button>
               <button 
                 onClick={() => setFiltroAtivo('Atenção')}
                 className={`rounded-md px-4 py-1.5 text-sm font-medium ${filtroAtivo === 'Atenção' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
-                Em atenção (3)
+                Em atenção
               </button>
               <button 
                 onClick={() => setFiltroAtivo('Risco de evasão')}
                 className={`rounded-md px-4 py-1.5 text-sm font-medium ${filtroAtivo === 'Risco de evasão' ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
-                Risco de evasão (3)
+                Risco de evasão
               </button>
             </div>
           )}
