@@ -40,7 +40,9 @@ const mockAlunos: Aluno[] = [
   { ra: '202401088', nome: 'Lucas Almeida', frequencia: 10, faltasConsecutivas: 15, faltasNaSemana: 0, status: 'Evadido', dataEvasao: '10/05/2024' },
 ];
 
-
+const mockJustificativas: Justificativa[] = [
+  {id: '1', ra: '202401013', nome: 'Beatriz Silva', dataFalta: '04/06/2026', motivo: 'Problema no transporte público', statusAnalise: 'Pendente'},
+];
 
 export default function Dashboard() {
   // estados para controlar o que está ativo na tela
