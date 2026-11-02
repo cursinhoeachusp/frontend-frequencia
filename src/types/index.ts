@@ -1,27 +1,21 @@
-// tipagem para o histórico de presenças no calendário
-export type RegistroDia = {
-  dia: number;
-  status: 'P' | 'F' | 'J';
-};
+export type StatusMatricula = 'Regular' | 'Atenção' | 'Risco de evasão' | 'Evadido';
+export type StatusPresenca = 'Presente' | 'Justificado' | 'Falta';
 
-// tipagem principal do aluno
-export type Aluno = {
+export interface Aluno {
   ra: string;
-  nome: string;
+  nome: string; 
   frequencia: number;
+  totalFaltas: number;
+  diasGarantidos: number;
+  totalDiasEsperados: number;
+  totalFaltasJustificadas: number;
   faltasConsecutivas: number;
-  faltasNaSemana: number;
-  status: 'Regular' | 'Atenção' | 'Risco de evasão' | 'Evadido';
-  dataEvasao?: string; 
-  historico: RegistroDia[];
-};
+  statusMatricula: StatusMatricula;
+}
 
-// tipagem para as solicitações de justificativa
-export type Justificativa = {
-  id: string;
-  ra: string;
-  nome: string;
-  dataFalta: string;
-  motivo: string;
-  statusAnalise: 'Pendente' | 'Aprovada' | 'Recusada';
-};
+export interface DashboardEstatisticas {
+  totalAlunos: number;
+  regulares: number;
+  emAtencao: number;
+  riscoEvasao: number;
+}
