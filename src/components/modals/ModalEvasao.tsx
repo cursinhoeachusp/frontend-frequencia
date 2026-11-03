@@ -28,10 +28,6 @@ export default function ModalEvasao({ aluno, onClose, onReactivate }: ModalEvasa
             <p className="text-lg font-semibold text-slate-900">{aluno.nome}</p>
             <p className="text-sm text-slate-500">RA: {aluno.ra}</p>
           </div>
-          <div className="border-l-4 border-red-500 pl-4 py-1">
-            <p className="text-xs font-medium uppercase text-red-500">Data do desligamento</p>
-            <p className="font-bold text-slate-900">{aluno.dataEvasao}</p>
-          </div>
           <div className="rounded-md bg-slate-50 p-3 border border-slate-100">
             <p className="text-xs font-medium uppercase text-slate-500 mb-1">Motivo do sistema</p>
             <p className="text-sm text-slate-700">
