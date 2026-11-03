@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-// tipagens e mocks
-import type { Aluno, Justificativa } from '../types';
-import { dadosIniciaisAlunos, mockJustificativas } from '../mocks/data';
+// tipagens e api
+import type { Aluno, Justificativa, DashboardEstatisticas } from '../types';
+import { buscarAlunos, buscarEstatisticasDashboard } from '../services/api';
+import { justificativasMock } from '../mocks/data'; // Temporário até criarmos buscarJustificativas() na API
 
 // componentes
 import Header from '../components/Header';
@@ -17,20 +18,46 @@ export default function Dashboard() {
   // estados gerais
   const [abaAtiva, setAbaAtiva] = useState('Lista geral');
   const [filtroAtivo, setFiltroAtivo] = useState('Todos');
-  const [alunos, setAlunos] = useState<Aluno[]>(dadosIniciaisAlunos);
-  const [justificativas, setJustificativas] = useState<Justificativa[]>(mockJustificativas);
+  
+  // estados de dados da API
+  const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const [estatisticas, setEstatisticas] = useState<DashboardEstatisticas | null>(null);
+  const [justificativas, setJustificativas] = useState<Justificativa[]>(justificativasMock);
+  const [carregando, setCarregando] = useState(true);
   
   // estados dos modais
   const [justificativaSelecionada, setJustificativaSelecionada] = useState<Justificativa | null>(null);
   const [alunoEditando, setAlunoEditando] = useState<Aluno | null>(null);
   const [evasaoSelecionada, setEvasaoSelecionada] = useState<Aluno | null>(null);
 
+  useEffect(() => {
+    const carregarDadosDashboard = async () => {
+      setCarregando(true);
+      try {
+        // Busca alunos e métricas simultaneamente
+        const [dadosAlunos, dadosMetricas] = await Promise.all([
+          buscarAlunos(), 
+          buscarEstatisticasDashboard()
+        ]);
+        
+        setAlunos(dadosAlunos);
+        setEstatisticas(dadosMetricas);
+      } catch (error) {
+        console.error("Erro ao carregar dados", error);
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    carregarDadosDashboard();
+  }, []);
+
   const salvarEdicaoAluno = (alunoAtualizado: Aluno) => {
     setAlunos(alunos.map(a => a.ra === alunoAtualizado.ra ? alunoAtualizado : a));
     setAlunoEditando(null);
   };
 
-  const analisarJustificativa = (id: string, novoStatus: 'Aprovada' | 'Recusada') => {
+  const analisarJustificativa = (id: string, novoStatus: 'Aprovado' | 'Rejeitado') => {
     setJustificativas(justificativas.map(just => 
       just.id === id ? { ...just, statusAnalise: novoStatus } : just
     ));
@@ -39,7 +66,7 @@ export default function Dashboard() {
 
   const reativarMatricula = (ra: string) => {
     setAlunos(alunos.map(a => 
-      a.ra === ra ? { ...a, status: 'Regular', dataEvasao: undefined, faltasConsecutivas: 0 } : a
+      a.ra === ra ? { ...a, status: 'Regular', faltasConsecutivas: 0 } : a
     ));
     setEvasaoSelecionada(null);
   };
@@ -77,8 +104,12 @@ export default function Dashboard() {
 
       <main className="mx-auto max-w-7xl px-8 py-6">
         
-        {/* cards superiores */}
-        <SummaryCards alunos={alunos} />
+        {/* cards superiores e loading */}
+        {carregando || !estatisticas ? (
+          <div className="py-4 text-slate-500 font-medium">Carregando métricas...</div>
+        ) : (
+          <SummaryCards dados={estatisticas} /> 
+        )}
 
         {/* area principal */}
         <div className="rounded-xl bg-white shadow-sm border border-slate-100 p-6">
