@@ -81,8 +81,7 @@ export default function TabelaAlunos({
                 </>
               ) : abaAtiva === 'Evasões' ? (
                 <>
-                  <th className="py-3 px-4">Data da Evasão</th>
-                  <th className="py-3 px-4">Faltas Consecutivas</th>
+                  <th className="py-3 px-4 text-center">Faltas Consecutivas</th>
                   <th className="py-3 px-4">Status</th>
                 </>
               ) : (
@@ -101,10 +100,11 @@ export default function TabelaAlunos({
               <tr key={j.id} className="border-b border-slate-100 hover:bg-slate-50">
                 <td className="py-4 px-4 font-bold text-slate-900">{j.ra}</td>
                 <td className="py-4 px-4">{j.nome}</td>
-                <td className="py-4 px-4">{j.dataFalta}</td>
+                {/* Aqui entra o join para formatar o array de datas corretamente */}
+                <td className="py-4 px-4">{j.datasFalta.join(', ')}</td>
                 <td className="py-4 px-4 max-w-xs truncate" title={j.motivo}>{j.motivo}</td>
                 <td className="py-4 px-4">
-                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${j.statusAnalise === 'Aprovada' ? 'bg-emerald-100 text-emerald-700' : j.statusAnalise === 'Recusada' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>
+                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${j.statusAnalise === 'Aprovado' ? 'bg-emerald-100 text-emerald-700' : j.statusAnalise === 'Rejeitado' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>
                     {j.statusAnalise}
                   </span>
                 </td>
@@ -124,7 +124,6 @@ export default function TabelaAlunos({
                 <td className="py-4 px-4">{aluno.nome}</td>
                 {abaAtiva === 'Evasões' ? (
                   <>
-                    <td className="py-4 px-4 text-slate-900">{aluno.dataEvasao}</td>
                     <td className="py-4 px-4 text-center">{aluno.faltasConsecutivas}</td>
                   </>
                 ) : (
