@@ -1,16 +1,14 @@
 export type StatusMatricula = 'Regular' | 'Atenção' | 'Risco de evasão' | 'Evadido';
 export type StatusPresenca = 'Presente' | 'Justificado' | 'Falta';
+export type StatusAnalise = 'Pendente' | 'Aprovado' | 'Rejeitado';
 
 export interface Aluno {
   ra: string;
-  nome: string; 
+  nome: string;
   frequencia: number;
-  totalFaltas: number;
-  diasGarantidos: number;
-  totalDiasEsperados: number;
-  totalFaltasJustificadas: number;
   faltasConsecutivas: number;
-  statusMatricula: StatusMatricula;
+  faltasNaSemana: number;
+  status: StatusMatricula;
 }
 
 export interface DashboardEstatisticas {
@@ -18,4 +16,15 @@ export interface DashboardEstatisticas {
   regulares: number;
   emAtencao: number;
   riscoEvasao: number;
+}
+
+export interface Justificativa {
+  id: string;
+  ra: string;
+  nome: string;
+  turno: string;
+  datasFalta: string[];
+  motivo: string;
+  statusAnalise: StatusAnalise;
+  dataEnvio: string;
 }
