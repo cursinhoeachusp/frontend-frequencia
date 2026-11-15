@@ -1,4 +1,3 @@
-import React from 'react';
 import logoCpe from '../assets/logo_cpe.png';
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
 

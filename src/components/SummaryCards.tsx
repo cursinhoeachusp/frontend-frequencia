@@ -1,4 +1,3 @@
-import React from 'react';
 import type { DashboardEstatisticas } from '../types';
 
 interface SummaryCardsProps {

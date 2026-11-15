@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // tipagens e api
 import type { Aluno, Justificativa, DashboardEstatisticas } from '../types';
@@ -35,12 +35,16 @@ export default function Dashboard() {
       setCarregando(true);
       try {
         // Busca alunos e métricas simultaneamente
-        const [dadosAlunos, dadosMetricas] = await Promise.all([
-          buscarAlunos(), 
+        // A lista geral não traz evadidos; eles vêm de um pedido separado.
+        // Juntamos as duas listas porque a TabelaAlunos ainda separa os evadidos sozinha
+        // (provisório até a 5.4 do plano de integração).
+        const [dadosAlunos, dadosEvadidos, dadosMetricas] = await Promise.all([
+          buscarAlunos(),
+          buscarAlunos({ evadidos: true }),
           buscarEstatisticasDashboard()
         ]);
-        
-        setAlunos(dadosAlunos);
+
+        setAlunos([...dadosAlunos, ...dadosEvadidos]);
         setEstatisticas(dadosMetricas);
       } catch (error) {
         console.error("Erro ao carregar dados", error);
